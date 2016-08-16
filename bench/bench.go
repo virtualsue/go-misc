@@ -11,9 +11,12 @@ import (
 	)
 
 func main() {
+	if len(os.Args) < 2 {
+		Usage()
+	}
 	repeat_max, err := strconv.Atoi(os.Args[1])
 	if err != nil {
-		log.Fatalf("Usage: %s <repeat count> <program path>\n", os.Args[0])
+		Usage()
 	}
 	program := os.Args[2]
 	for count := 0; count < repeat_max; count++ {
@@ -22,13 +25,17 @@ func main() {
 		cmd.Stdout = &out
 		log.Println(time.Now())
 		err = cmd.Run()
+		log.Println(time.Now())
 		if err != nil {
 			log.Fatalf("Damn, there was an error executing %s", program)
 		}
-		log.Println(time.Now())
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println(out.String)
 	}
+}
+
+func Usage() {
+		log.Fatalf("Usage: %s <# iterations> <program path>\n", os.Args[0])
 }
