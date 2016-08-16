@@ -11,7 +11,7 @@ import (
 	)
 
 func main() {
-	if len(os.Args) < 2 {
+	if len(os.Args) < 3 {
 		Usage()
 	}
 	repeat_max, err := strconv.Atoi(os.Args[1])
@@ -27,7 +27,7 @@ func main() {
 		err = cmd.Run()
 		log.Println(time.Now())
 		if err != nil {
-			log.Fatalf("Damn, there was an error executing %s", program)
+			log.Fatalf("Damn, there was an error executing %s: %s", program, err)
 		}
 		if err != nil {
 			log.Fatal(err)
