@@ -62,15 +62,15 @@ func run() int {
 
 	renderer.SetDrawColor(0, 0, 255, 255)
 	scale := width / (rMax - rMin)
-//	height := int(scale * (iMax - iMin))
+	//	height := int(scale * (iMax - iMin))
 
 	for x := 0; x < 800; x++ {
 		var fy float64 = mandelbrot(x)
 		renderer.DrawPoint(x, y)
 	}
 
-//	renderer.SetDrawColor(0, 255, 255, 255)
-//	renderer.DrawPoint(250, 300)
+	//	renderer.SetDrawColor(0, 255, 255, 255)
+	//	renderer.DrawPoint(250, 300)
 
 	renderer.Present()
 

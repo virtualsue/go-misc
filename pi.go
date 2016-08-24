@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 )
 
 func main() {
-
-	var n = 1000000
-	var delta = 1.0 / float64(n)
-	var sum float64
-	var x float64
+	n := 5000000
+	delta := 1.0 / float64(n)
+	var sum, x float64
 
 	for i := 1; i <= n; i++ {
 		x = (float64(i) - 0.5) * delta
