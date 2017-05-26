@@ -33,9 +33,7 @@ func main() {
 
 	robot := gobot.NewRobot("trafficBot",
 		[]gobot.Connection{r},
-		[]gobot.Device{green},
-		[]gobot.Device{yellow},
-		[]gobot.Device{red},
+		[]gobot.Device{green, yellow, red},
 		work,
 	)
 
