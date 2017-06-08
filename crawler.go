@@ -5,9 +5,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
 	"golang.org/x/net/html"
-	"io"
+	"strings"
+)
+
+type Page struct {
+	linksTo []string
+	reachedFrom []string
+	assets []string
+}
+
+var (
+	visited map[string]bool
+	pages []Page
 )
 
 func main() {
@@ -16,39 +26,59 @@ func main() {
 	domainp := flag.String("domain", default_domain, "Specify the domain name to crawl. Default is "+default_domain)
 	flag.Parse()
 	fmt.Println("Crawling domain", *domainp)
-    crawl(*domainp)
+    startCrawl(*domainp)
 
 }
 
-func crawl(domain string) {
-	urls := make(map[string]bool)
+func startCrawl(domain string) {
+	links := getLinks(domain)
+	for url, follow := range links {
+		fmt.Println(url)
+		if follow == true {
+			links := getLinks(url)
+		}
+	}
+}
+
+func getLinks(domain string) (map[string]bool){
+	links := make(map[string]bool)
 	resp, err := http.Get(domain)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
-	tokenizer := html.NewTokenizer(page)
+	tokenizer := html.NewTokenizer(resp.Body)
 	for {
 		t := tokenizer.Next()
 		switch t {
 		case html.ErrorToken:
 			// End of document
-			return
+			return links
 		case html.StartTagToken:
 			token := tokenizer.Token()
 
 			isAnchor := token.Data == "a"
 			if isAnchor {
 				href := getHref(token)
-				fmt.Println("href is ", href)
-				if (href != "") {
-					// Determine if link should be followed
-					crawl
+				if href != "" && href != "/" && strings.HasPrefix(href, "#") != true {
+					link, follow := normaliseHref(href, domain)
+					links[link] = follow
 				}
 			}
 		}
 	}
+}
+
+func normaliseHref(href string, domain string) (string, bool) {
+	newHref := href
+	follow := true
+	if strings.HasPrefix(href, "/") {
+		newHref = domain + href
+	} else if strings.HasPrefix(href, domain) != true {
+		follow = false
+	}
+	return newHref, follow
 }
 
 func getHref(token html.Token) (href string) {
